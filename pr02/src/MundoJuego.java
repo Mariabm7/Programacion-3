@@ -108,4 +108,14 @@ public class MundoJuego {
 		return vel + (acel*tiempo);
 	}
 	
+	public static double calcFuerzaRozamiento( double masa, double coefRozSuelo, 
+			double coefRozAire, double vel ) {   
+		double fuerzaRozamientoAire = coefRozAire * (-vel);  
+		// En contra del movimiento   
+		double fuerzaRozamientoSuelo = masa * coefRozSuelo * ((vel>0)?(-1):1);  
+		// Contra mvto   
+		return fuerzaRozamientoAire + fuerzaRozamientoSuelo; 
+		}
+	
+	
 }
