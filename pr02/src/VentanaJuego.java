@@ -175,6 +175,7 @@ public class VentanaJuego extends JFrame {
 			miVentana.miMundo.creaCoche( 150, 100 );
 			miVentana.miCoche = miVentana.miMundo.getCoche();
 			miVentana.miCoche.setPiloto( "Fernando Alonso" );
+			miVentana.miMundo.creaEstrella();
 			// Crea el hilo de movimiento del coche y lo lanza
 			miVentana.miHilo = miVentana.new MiRunnable();  // Sintaxis de new para clase interna
 			Thread nuevoHilo = new Thread( miVentana.miHilo );
@@ -189,16 +190,23 @@ public class VentanaJuego extends JFrame {
 	 * Facultad de Ingeniería - Universidad de Deusto (2014)
 	 */
 	class MiRunnable implements Runnable {
+		double fuerza;
 		boolean sigo = true;
 		@Override
 		public void run() {
 			// Bucle principal forever hasta que se pare el juego...
 			while (sigo) {
+				fuerza = 0;
 				if (pulsaciones[0]){
-					miCoche.acelera(+5, 1);
+					//miCoche.acelera(+5, 1);
+					fuerza = miCoche.fuerzaAceleracionAdelante();
 				}else if (pulsaciones[1]){
-					miCoche.acelera(-5, -1);
-				}else if (pulsaciones[2]){
+					//miCoche.acelera(-5, -1);
+					fuerza = miCoche.fuerzaAceleracionAtras();
+				}
+				MundoJuego.aplicarFuerza(fuerza, miCoche);
+				
+				if (pulsaciones[2]){
 					miCoche.gira(+10);
 				}else if (pulsaciones[3]){
 					miCoche.gira(-10);

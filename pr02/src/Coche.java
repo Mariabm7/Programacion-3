@@ -5,6 +5,12 @@
  * Facultad de Ingeniería - Universidad de Deusto (2014)
  */
 public class Coche {
+	public static final double MASA = 1;
+	public static final double COEF_RZTO_AIRE = 0.35;
+	public static final double COEF_RZTO_SUELO = 15.5;
+	private static final double FUERZA_BASE_ADELANTE = 2000;
+	protected static final double FUERZA_BASE_ATRAS = -1000;
+	
 	protected double miVelocidad;  // Velocidad en pixels/segundo
 	protected double miDireccionActual;  // Dirección en la que estoy mirando en grados (de 0 a 360)
 	protected double posX;  // Posición en X (horizontal)
@@ -103,4 +109,41 @@ public class Coche {
 		return piloto + " (" + posX + "," + posY + ") - " +
 			   "Velocidad: " + miVelocidad + " ## Dirección: " + miDireccionActual; 
 	}
+	/**
+	 * Devuelve la fuerza de aceleración del coche, de acuerdo al motor definido
+	 * en la práctica 2
+	 ** 
+	 * @return Fuerza de aceleración en Newtixels
+	 */
+	public double fuerzaAceleracionAdelante() {
+		if (miVelocidad <= -150)
+			return FUERZA_BASE_ADELANTE;
+		else if (miVelocidad <= 0)
+			return FUERZA_BASE_ADELANTE * (-miVelocidad / 150 * 0.5 + 0.5);
+		else if (miVelocidad <= 250)
+			return FUERZA_BASE_ADELANTE * (miVelocidad / 250 * 0.5 + 0.5);
+//		else if (miVelocidad <= 250)
+//			return FUERZA_BASE_ADELANTE * (miVelocidad / 250 * 0.5 + 0.5);
+		else if (miVelocidad <= 750)
+			return FUERZA_BASE_ADELANTE;
+		else
+			return FUERZA_BASE_ADELANTE * (-(miVelocidad - 1000) / 250);
+	}
+	
+	public double fuerzaAceleracionAtras() {
+		if (miVelocidad >= 200)
+			return FUERZA_BASE_ATRAS;
+		else if (miVelocidad > 0)
+			return FUERZA_BASE_ATRAS * (-miVelocidad / 150 * 0.5 + 0.5);
+		else if (miVelocidad <= -250)
+			return FUERZA_BASE_ATRAS * (miVelocidad / 250 * 0.5 + 0.5);
+//		else if (miVelocidad <= 250)
+//			return FUERZA_BASE_ADELANTE * (miVelocidad / 250 * 0.5 + 0.5);
+		else if (miVelocidad <= -750)
+			return FUERZA_BASE_ATRAS;
+		else
+			return FUERZA_BASE_ATRAS * 0.85;  //85 %
+	}
+	
+
 }
