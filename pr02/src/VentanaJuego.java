@@ -2,10 +2,13 @@
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.event.*;
 import java.util.Arrays;
 
 import javax.swing.*;
+
+import com.sun.org.apache.bcel.internal.generic.LMUL;
 
 /** Clase principal de minijuego de coche para Práctica 02 - Prog III
  * Ventana del minijuego.
@@ -19,7 +22,9 @@ public class VentanaJuego extends JFrame {
 	CocheJuego miCoche;        // Coche del juego
 	MiRunnable miHilo = null;  // Hilo del bucle principal de juego	
 	
-	private Boolean [] pulsaciones = new Boolean[4]; 
+	private Boolean [] pulsaciones = new Boolean[4];
+	private JLabel lMensaje;
+	
 	/** Constructor de la ventana de juego. Crea y devuelve la ventana inicializada
 	 * sin coches dentro
 	 */
@@ -34,15 +39,18 @@ public class VentanaJuego extends JFrame {
 		JButton bFrenar = new JButton( "Frena" );
 		JButton bGiraIzq = new JButton( "Gira Izq." );
 		JButton bGiraDer = new JButton( "Gira Der." );
+		lMensaje = new JLabel("Puntos: 0hjkh - ESTRELLAS PERDIDAS: 0");
 		// Formato y layouts
 		pPrincipal.setLayout( null );
 		pPrincipal.setBackground( Color.white );
 		// Añadido de componentes a contenedores
 		add( pPrincipal, BorderLayout.CENTER );
-		pBotonera.add( bAcelerar );
-		pBotonera.add( bFrenar );
-		pBotonera.add( bGiraIzq );
-		pBotonera.add( bGiraDer );
+//		pBotonera.add( bAcelerar );
+//		pBotonera.add( bFrenar );
+//		pBotonera.add( bGiraIzq );
+//		pBotonera.add( bGiraDer );
+		pBotonera.add(lMensaje);
+		
 		add( pBotonera, BorderLayout.SOUTH );
 		// Formato de ventana
 		setSize( 1000, 750 );
@@ -175,7 +183,9 @@ public class VentanaJuego extends JFrame {
 			miVentana.miMundo.creaCoche( 150, 100 );
 			miVentana.miCoche = miVentana.miMundo.getCoche();
 			miVentana.miCoche.setPiloto( "Fernando Alonso" );
+			
 			miVentana.miMundo.creaEstrella();
+			
 			// Crea el hilo de movimiento del coche y lo lanza
 			miVentana.miHilo = miVentana.new MiRunnable();  // Sintaxis de new para clase interna
 			Thread nuevoHilo = new Thread( miVentana.miHilo );
@@ -196,7 +206,19 @@ public class VentanaJuego extends JFrame {
 		public void run() {
 			// Bucle principal forever hasta que se pare el juego...
 			while (sigo) {
+				if(System.currentTimeMillis() - miMundo.getUltimaCreacion() >= 1200){
+					miMundo.creaEstrella();
+				}
+				if (miMundo.quitaYRotaEstrellas(6000)){
+					lMensaje.setText("Puntos "+ miMundo.getPuntuacion()+ "- ESTRELLAS PERDIDAS: "+ miMundo.getPerdidas());
+				}
+				if (miMundo.getPerdidas()>=10){
+					sigo = false;
+				}
+				miMundo.choqueConEstrellas();
 				fuerza = 0;
+				
+				
 				if (pulsaciones[0]){
 					//miCoche.acelera(+5, 1);
 					fuerza = miCoche.fuerzaAceleracionAdelante();
